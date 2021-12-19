@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import static org.samo_lego.blacksmiths.Blacksmiths.CONFIG;
 import static org.samo_lego.blacksmiths.Blacksmiths.MOD_ID;
 
 public class BlacksmithProfession implements TaterzenProfession {
@@ -27,6 +28,8 @@ public class BlacksmithProfession implements TaterzenProfession {
     public TaterzenNPC npc;
 
     private final HashMap<UUID, List<RepairInventory>> inventories = new HashMap<>();
+    private boolean workInUnloadedChunks = CONFIG.workInUnloadedChunks;
+    private double durabilityPerSecond = CONFIG.durabilityPerSecond;
 
     public BlacksmithProfession() {
     }
@@ -39,7 +42,7 @@ public class BlacksmithProfession implements TaterzenProfession {
     @Override
     public InteractionResult interactAt(Player player, Vec3 pos, InteractionHand hand) {
         List<RepairInventory> invs = this.inventories.computeIfAbsent(player.getUUID(), k -> new ArrayList<>());
-        new RepairGUI((ServerPlayer) player, this.npc.getName(), invs).open();
+        new RepairGUI((ServerPlayer) player, this, this.npc.getName(), invs).open();
         return InteractionResult.CONSUME;
     }
 
@@ -61,16 +64,16 @@ public class BlacksmithProfession implements TaterzenProfession {
                 if (items != null) {
                     List<RepairInventory> invs = new ArrayList<>(items.size());
                     for (Tag item : items) {
-                        RepairInventory inv = new RepairInventory();
+                        RepairInventory inv = new RepairInventory(this);
                         inv.fromTag((CompoundTag) item);
                         if (!inv.peek().isEmpty())
                             invs.add(inv);
                     }
                     this.inventories.put(playerTag.getUUID("UUID"), invs);
                 }
-
             });
         }
+        this.workInUnloadedChunks = tag.getBoolean("WorkInUnloadedChunks");
     }
 
     @Override
@@ -92,5 +95,22 @@ public class BlacksmithProfession implements TaterzenProfession {
            }
         });
         tag.put("Inventory", data);
+        tag.putBoolean("WorkInUnloadedChunks", this.workInUnloadedChunks);
+    }
+
+    public void setWorkInUnloadedChunks(boolean value) {
+        this.workInUnloadedChunks = value;
+    }
+
+    public boolean canWorkInUnloadedChunks() {
+        return this.workInUnloadedChunks;
+    }
+
+    public void setDurabilityPerSecond(double value) {
+        this.durabilityPerSecond = value;
+    }
+
+    public double getDurabilityPerSecond() {
+        return this.durabilityPerSecond;
     }
 }

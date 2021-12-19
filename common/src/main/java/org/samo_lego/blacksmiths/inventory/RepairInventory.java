@@ -2,15 +2,19 @@ package org.samo_lego.blacksmiths.inventory;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-
-import static org.samo_lego.blacksmiths.Blacksmiths.CONFIG;
+import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
 
 public class RepairInventory {
 
+    private final BlacksmithProfession profession;
     private ItemStack repairingItem = ItemStack.EMPTY;
     private boolean finished = false;
     private long startTime = 0;
     private int startDamage = 0;
+
+    public RepairInventory(BlacksmithProfession profession) {
+        this.profession = profession;
+    }
 
     public boolean startRepairing(ItemStack item) {
         boolean empty = repairingItem.isEmpty();
@@ -28,8 +32,8 @@ public class RepairInventory {
 
     public ItemStack getItem(long now) {
         if (!repairingItem.isEmpty() && !this.finished) {
-            long time = (now - this.startTime) / 1000;
-            long dmg = Math.max(0, this.startDamage - time);
+            long dmgDecrease = (long) ((now - this.startTime) * this.profession.getDurabilityPerSecond() / 1000);
+            long dmg = Math.max(0, this.startDamage - dmgDecrease);
             if (dmg == 0)
                 finished = true;
             this.repairingItem.setDamageValue((int) dmg);
@@ -40,7 +44,7 @@ public class RepairInventory {
 
     public void fromTag(CompoundTag tag) {
         this.repairingItem = ItemStack.of(tag.getCompound("Item"));
-        if (CONFIG.workInUnloadedChunks) {
+        if (this.profession.canWorkInUnloadedChunks()) {
             this.startTime = tag.getLong("StartTime");
         } else {
             this.startTime = System.currentTimeMillis();
@@ -54,11 +58,12 @@ public class RepairInventory {
         CompoundTag main = new CompoundTag();
 
         // Gets the item with up-to-date damage value
-        this.getItem(System.currentTimeMillis()).save(item);
+        ItemStack repairing = this.getItem(System.currentTimeMillis());
+        repairing.save(item);
 
         main.put("Item", item);
         main.putLong("StartTime", this.startTime);
-        main.putInt("StartDamage", this.startDamage);
+        main.putInt("StartDamage", repairing.getDamageValue());
 
         return main;
     }

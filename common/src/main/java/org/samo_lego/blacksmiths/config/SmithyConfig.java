@@ -14,9 +14,9 @@ public class SmithyConfig implements IBrigadierConfigurator {
 
     @SerializedName("// How much should the durability be increased each second.")
     public final String _comment_durabilityPerSecond = "";
-    @BrigadierDescription(defaultOption = "1.0")
+    @BrigadierDescription(defaultOption = "0.5")
     @SerializedName("durability_per_second")
-    public double durabilityPerSecond = 1.0D;
+    public double durabilityPerSecond = 0.5D;
 
     @SerializedName("// Whether items should update their durability in real-time or not.")
     public final String _comment_liveUpdate = "";
@@ -29,6 +29,20 @@ public class SmithyConfig implements IBrigadierConfigurator {
     public final String _comment_workInUnloadedChunks1 = "";
     @SerializedName("work_when_unloaded")
     public boolean workInUnloadedChunks = true;
+
+    public Permissions permissions = new Permissions();
+    public static class Permissions {
+
+        @SerializedName("// Permission level required for blacksmiths command.")
+        public final String _comment_blacksmithLevel = "";
+        @BrigadierDescription(defaultOption = "4")
+        @SerializedName("blacksmiths_cmd_level")
+        public int blacksmithsLevel = 4;
+
+        @BrigadierDescription(defaultOption = "2")
+        @SerializedName("profession_blacksmith_cmd_level")
+        public int blacksmithLevel = 2;
+    }
 
     /**
      * Loads config file.
