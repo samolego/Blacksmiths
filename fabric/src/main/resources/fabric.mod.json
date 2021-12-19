@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "blacksmiths",
+  "version": "${version}",
+  "name": "Blacksmiths",
+  "description": "A taterzens addon that adds blacksmiths professions.",
+  "authors": [
+    "samo_lego"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "Insert License Here",
+  "icon": "assets/blacksmiths/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "org.samo_lego.blacksmiths.fabric.BlacksmithsFabric"
+    ],
+    "grandeconomy": [
+      "org.samo_lego.blacksmiths.fabric.GrandEconomyImpl"
+    ]
+  },
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.18",
+    "taterzens": ">=1.6.5"
+  }
+}
