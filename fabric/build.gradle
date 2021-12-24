@@ -32,8 +32,7 @@ dependencies {
 
     // Taterzens
     // We need this for profession API
-    modCompileOnly("com.github.samolego.Taterzens:taterzens-fabric:${project.taterzens}")
-    modRuntimeOnly("com.github.samolego.Taterzens:taterzens-fabric:${project.taterzens}")
+    modImplementation("com.github.samolego.Taterzens:taterzens-fabric:${project.taterzens}")
 
     modCompileOnly "dev.the-fireplace:Grand-Economy:${project.grandeconomy_version}:api"
     modRuntime "dev.the-fireplace:Grand-Economy:${project.grandeconomy_version}"

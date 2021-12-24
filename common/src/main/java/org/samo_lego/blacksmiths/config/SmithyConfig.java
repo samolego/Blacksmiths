@@ -18,10 +18,13 @@ public class SmithyConfig implements IBrigadierConfigurator {
     @SerializedName("durability_per_second")
     public double durabilityPerSecond = 0.5D;
 
-    @SerializedName("// Whether items should update their durability in real-time or not.")
-    public final String _comment_liveUpdate = "";
-    @SerializedName("live_update")
-    public boolean liveUpdate = true;
+    @SerializedName("// Whether items should update their durability 100% accurately or not.")
+    public final String _comment_liveUpdate0 = "";
+    @SerializedName("// Causes a bit more lag if true. If false, durability display can vary for some points (but is still accurate when item is taken).")
+    public final String _comment_liveUpdate1 = "";
+    @BrigadierDescription(defaultOption = "true")
+    @SerializedName("force_accurate_update")
+    public boolean forceAccurate = false;
 
     @SerializedName("// Whether repairing should happen based on time, which makes it 'work' in unloaded chunks as well.")
     public final String _comment_workInUnloadedChunks0 = "";

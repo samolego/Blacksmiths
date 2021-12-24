@@ -16,6 +16,7 @@ public class RepairGUI extends ListItemsGUI {
 
     private final List<RepairInventory> items;
     private final BlacksmithProfession profession;
+    private int tickCounter = 0;
 
     /**
      * Constructs a new simple container gui for the supplied player.
@@ -29,7 +30,8 @@ public class RepairGUI extends ListItemsGUI {
         this.items = items;
         this.profession = profession;
 
-        if (CONFIG.liveUpdate) {
+        // If live update is disabled, we need to refresh the gui upon opening.
+        if (!CONFIG.forceAccurate) {
             long now = System.currentTimeMillis();
             this.items.forEach(inv -> inv.getItem(now));
         }
@@ -63,10 +65,19 @@ public class RepairGUI extends ListItemsGUI {
 
         if(index < this.items.size()) {
             RepairInventory inv = this.items.get(index);
-            if (CONFIG.liveUpdate) {
+            if (CONFIG.forceAccurate) {
                 itemStack = inv.getItem(System.currentTimeMillis());
             } else {
                 itemStack = inv.peek();
+                // We can modify the itemstack in the inventory, as it will
+                // be changed anyway when taken out of the inventory.
+                int dmg = (int) (this.tickCounter * this.profession.getDurabilityPerSecond() / 20);
+                ++this.tickCounter;
+
+                if (dmg > 0) {
+                    itemStack.setDamageValue(itemStack.getDamageValue() - dmg);
+                    this.tickCounter = 0;
+                }
             }
         } else {
             itemStack = ItemStack.EMPTY;
@@ -82,8 +93,10 @@ public class RepairGUI extends ListItemsGUI {
 
     @Override
     public ItemStack removeItemNoUpdate(int index) {
+        System.out.println("removeItemNoUpdate " + index);
         ItemStack itemStack;
         index = getSlot2MessageIndex(index);
+        System.out.println("removeItemNoUpdate# " + index);
 
         if(index < this.items.size()) {
             itemStack = this.items.remove(index).getItem(System.currentTimeMillis());
@@ -105,6 +118,8 @@ public class RepairGUI extends ListItemsGUI {
             boolean canRepair = inv.startRepairing(stack);
             if (canRepair)
                 this.items.add(index, inv);
+        } else if (stack.isEmpty()) {
+            this.removeItemNoUpdate(index);
         }
     }
 

@@ -16,14 +16,19 @@ public class RepairInventory {
         this.profession = profession;
     }
 
+    /**
+     * Tries to start repairing the item.
+     * @param item item to repair.
+     * @return true if repairing was started.
+     */
     public boolean startRepairing(ItemStack item) {
-        boolean empty = repairingItem.isEmpty();
+        boolean empty = this.repairingItem.isEmpty();  // Current item if any
         if (empty && item.isDamaged()) {
             this.repairingItem = item;
             this.startTime = System.currentTimeMillis();  // Allows for "repairing" even if unloaded
             this.startDamage = item.getDamageValue();
         }
-        return empty;
+        return empty;  // If there was an item already, return false
     }
 
     public ItemStack peek() {
@@ -33,8 +38,8 @@ public class RepairInventory {
     public ItemStack getItem(long now) {
         if (!repairingItem.isEmpty() && !this.finished) {
             long dmgDecrease = (long) ((now - this.startTime) * this.profession.getDurabilityPerSecond() / 1000);
-            long dmg = Math.max(0, this.startDamage - dmgDecrease);
-            if (dmg == 0)
+            long dmg = this.startDamage - dmgDecrease;
+            if (dmg <= 0)
                 finished = true;
             this.repairingItem.setDamageValue((int) dmg);
             return this.repairingItem;
