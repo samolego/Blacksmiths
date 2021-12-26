@@ -4,8 +4,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Optional;
+import org.samo_lego.blacksmiths.gui.RepairGUI;
 
 public class RepairingSlot extends Slot {
 
@@ -26,37 +25,6 @@ public class RepairingSlot extends Slot {
         return itemStack.isDamaged();
     }
 
-    @Override
-    public void onTake(Player player, ItemStack itemStack) {
-        System.out.println("onTake");
-        //this.set(ItemStack.EMPTY);
-        this.setChanged();
-    }
-
-    @Override
-    public ItemStack safeTake(int i, int j, Player player) {
-        Optional<ItemStack> optional = this.tryRemove(i, j, player);
-        optional.ifPresent((itemStack) -> this.onTake(player, itemStack));
-        return optional.orElse(ItemStack.EMPTY);
-    }
-
-    @Override
-    protected void onQuickCraft(ItemStack itemStack, int i) {
-        System.out.println("onQuickCraft " + i);
-        //this.set(ItemStack.EMPTY);
-        this.setChanged();
-    }
-
-    @Override
-    protected void onSwapCraft(int i) {
-        System.out.println("onSwapCraft " + i); // todo fix item shadowing
-        this.container.removeItemNoUpdate(i);
-        //this.setChanged();  // doesn't work
-
-        this.set(ItemStack.EMPTY);
-        this.setChanged();
-    }
-
     /**
      * Also detects shift clicking the item.
      * @param player player taking the item.
@@ -64,7 +32,6 @@ public class RepairingSlot extends Slot {
      */
     @Override
     public boolean mayPickup(Player player) {
-        System.out.println("mayPickup" + this.container.getItem(this.slot));
-        return true;
+        return ((RepairGUI) this.container).canAfford(this.slot, System.currentTimeMillis());
     }
 }

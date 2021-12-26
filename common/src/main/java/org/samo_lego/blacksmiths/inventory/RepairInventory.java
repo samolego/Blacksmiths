@@ -31,20 +31,57 @@ public class RepairInventory {
         return empty;  // If there was an item already, return false
     }
 
+    /**
+     * Gets the repairing item.
+     * @return repairing item.
+     */
     public ItemStack peek() {
         return this.repairingItem;
     }
 
+
+    /**
+     * Gets item with up-to-date damage value.
+     * @param now current time.
+     * @return item with up-to-date damage value.
+     */
     public ItemStack getItem(long now) {
         if (!repairingItem.isEmpty() && !this.finished) {
-            long dmgDecrease = (long) ((now - this.startTime) * this.profession.getDurabilityPerSecond() / 1000);
-            long dmg = this.startDamage - dmgDecrease;
-            if (dmg <= 0)
-                finished = true;
-            this.repairingItem.setDamageValue((int) dmg);
+            int dmg = this.getLatestDamage(now);
+            this.repairingItem.setDamageValue(dmg);
             return this.repairingItem;
         }
         return repairingItem;
+    }
+
+
+    /**
+     * Gets the latest damage value.
+     * @param now current time.
+     * @return latest damage value.
+     */
+    private int getLatestDamage(long now) {
+        if (!repairingItem.isEmpty() && !this.finished) {
+            long dmgDecrease = (long) ((now - this.startTime) * this.profession.getDurabilityPerSecond() / 1000);
+            long dmg = this.startDamage - dmgDecrease;
+            if (dmg <= 0) {
+                finished = true;
+                dmg = 0;
+            }
+            return (int) dmg;
+        }
+        return 0;
+    }
+
+
+    /**
+     * Gets price for the repair at the current time.
+     * @param now current time.
+     * @return price for the repair at the current time.
+     */
+    public double getPrice(long now) {
+        int repaired = this.startDamage - this.getLatestDamage(now);
+        return repaired * this.profession.getCostPerDamage();
     }
 
     public void fromTag(CompoundTag tag) {
@@ -56,6 +93,7 @@ public class RepairInventory {
         }
 
         this.startDamage = tag.getInt("StartDamage");
+        this.finished = tag.getBoolean("Finished");
     }
 
     public CompoundTag toTag() {
@@ -69,6 +107,7 @@ public class RepairInventory {
         main.put("Item", item);
         main.putLong("StartTime", this.startTime);
         main.putInt("StartDamage", repairing.getDamageValue());
+        main.putBoolean("Finished", this.finished);
 
         return main;
     }

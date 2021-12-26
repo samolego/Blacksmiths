@@ -30,6 +30,7 @@ public class BlacksmithProfession implements TaterzenProfession {
     private final HashMap<UUID, List<RepairInventory>> inventories = new HashMap<>();
     private boolean workInUnloadedChunks = CONFIG.workInUnloadedChunks;
     private double durabilityPerSecond = CONFIG.durabilityPerSecond;
+    private double costPerDamage = CONFIG.costPerDurabilityPoint;
 
     public BlacksmithProfession() {
     }
@@ -74,6 +75,7 @@ public class BlacksmithProfession implements TaterzenProfession {
             });
         }
         this.workInUnloadedChunks = tag.getBoolean("WorkInUnloadedChunks");
+        this.durabilityPerSecond = tag.getDouble("DurabilityPerSecond");
     }
 
     @Override
@@ -96,6 +98,7 @@ public class BlacksmithProfession implements TaterzenProfession {
         });
         tag.put("Inventory", data);
         tag.putBoolean("WorkInUnloadedChunks", this.workInUnloadedChunks);
+        tag.putDouble("DurabilityPerSecond", this.durabilityPerSecond);
     }
 
     public void setWorkInUnloadedChunks(boolean value) {
@@ -112,5 +115,13 @@ public class BlacksmithProfession implements TaterzenProfession {
 
     public double getDurabilityPerSecond() {
         return this.durabilityPerSecond;
+    }
+
+    public double getCostPerDamage() {
+        return this.costPerDamage;
+    }
+
+    public void setCostPerDamage(double value) {
+        this.costPerDamage = value;
     }
 }

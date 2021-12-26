@@ -3,6 +3,7 @@ package org.samo_lego.blacksmiths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.samo_lego.blacksmiths.config.SmithyConfig;
+import org.samo_lego.blacksmiths.economy.EconomyUtil;
 import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
 import org.samo_lego.taterzens.api.TaterzensAPI;
 
@@ -13,18 +14,25 @@ public class Blacksmiths {
 
     public static final String MOD_ID = "blacksmiths";
     public static SmithyConfig CONFIG = null;
-    private PlatformType platform;
+    private final PlatformType platform;
 
-    public static final Blacksmiths INSTANCE = new Blacksmiths();
-    private Path configPath;
+    private static Blacksmiths INSTANCE;
+    private final Path configPath;
     public static final Logger LOGGER = LogManager.getLogger("Blacksmiths");
+    private final EconomyUtil economy;
 
-    public static void init(PlatformType platform) {
-        INSTANCE.platform = platform;
-        INSTANCE.configPath = Path.of(platform.getConfigPath() + "/Taterzens/blacksmiths.json");
+    public Blacksmiths(PlatformType platform, EconomyUtil economy) {
+        INSTANCE = this;
+        this.platform = platform;
+        this.economy = economy;
+        this.configPath = Path.of(platform.getConfigPath() + "/Taterzens/blacksmiths.json");
         CONFIG = SmithyConfig.loadConfigFile(INSTANCE.getConfigFile());
 
         TaterzensAPI.registerProfession(BlacksmithProfession.ID, new BlacksmithProfession());
+    }
+
+    public static Blacksmiths getInstance() {
+        return INSTANCE;
     }
 
     public PlatformType getPlatform() {
@@ -33,5 +41,9 @@ public class Blacksmiths {
 
     public File getConfigFile() {
         return this.configPath.toFile();
+    }
+
+    public EconomyUtil getEconomy() {
+        return economy;
     }
 }

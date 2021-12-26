@@ -3,6 +3,7 @@ package org.samo_lego.blacksmiths.gui;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import org.samo_lego.blacksmiths.Blacksmiths;
 import org.samo_lego.blacksmiths.inventory.RepairInventory;
 import org.samo_lego.blacksmiths.inventory.RepairingSlot;
 import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
@@ -58,6 +59,11 @@ public class RepairGUI extends ListItemsGUI {
         return this.items.isEmpty();
     }
 
+    /**
+     * Gets item at the given index. If live update is disabled, durability will be calculated from ticks.
+     * @param index index of the item to get.
+     * @return the item at the given index.
+     */
     @Override
     public ItemStack getItem(int index) {
         ItemStack itemStack;
@@ -91,25 +97,45 @@ public class RepairGUI extends ListItemsGUI {
         return this.removeItemNoUpdate(index);
     }
 
+    /**
+     * Removes the item at the given index, with up-to-date durability.
+     * @param index index of the item to remove.
+     * @return the item that was removed.
+     */
     @Override
     public ItemStack removeItemNoUpdate(int index) {
-        System.out.println("removeItemNoUpdate " + index);
-        ItemStack itemStack;
+        ItemStack itemStack = ItemStack.EMPTY;
         index = getSlot2MessageIndex(index);
-        System.out.println("removeItemNoUpdate# " + index);
 
         if(index < this.items.size()) {
-            itemStack = this.items.remove(index).getItem(System.currentTimeMillis());
-        } else {
-            itemStack = ItemStack.EMPTY;
+            long now = System.currentTimeMillis();
+
+            if (this.canAfford(index, now)) {
+                double price = this.items.get(index).getPrice(now);
+                itemStack = this.items.remove(index).getItem(now);
+                Blacksmiths.getInstance().getEconomy().withdraw(price, this.player);
+            }
         }
 
         return itemStack;
     }
 
+    /**
+     * Whether player can afford the item at the given index.
+     * @param index index of the item to check.
+     * @param now current time.
+     * @return true if player can afford the item.
+     */
+    public boolean canAfford(int index, long now) {
+        double price = this.items.get(index).getPrice(now);
+        return Blacksmiths.getInstance().getEconomy().canAfford(price, this.player);
+    }
+
     @Override
     public void setItem(int index, ItemStack stack) {
-        if (!stack.isEmpty() && stack.isDamaged()) {
+        if (stack.isEmpty()) {
+            this.removeItemNoUpdate(index);
+        } else {
             index = getSlot2MessageIndex(index);
             if (index > this.items.size())
                 index = this.items.size();
@@ -118,8 +144,6 @@ public class RepairGUI extends ListItemsGUI {
             boolean canRepair = inv.startRepairing(stack);
             if (canRepair)
                 this.items.add(index, inv);
-        } else if (stack.isEmpty()) {
-            this.removeItemNoUpdate(index);
         }
     }
 

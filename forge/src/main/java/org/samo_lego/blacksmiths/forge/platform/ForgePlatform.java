@@ -1,4 +1,4 @@
-package org.samo_lego.blacksmiths.forge;
+package org.samo_lego.blacksmiths.forge.platform;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.fml.loading.FMLPaths;

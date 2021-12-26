@@ -1,13 +1,15 @@
 package org.samo_lego.blacksmiths.config;
 
 import com.google.gson.annotations.SerializedName;
+import org.samo_lego.blacksmiths.Blacksmiths;
 import org.samo_lego.config2brigadier.IBrigadierConfigurator;
 import org.samo_lego.config2brigadier.annotation.BrigadierDescription;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-import static org.samo_lego.blacksmiths.Blacksmiths.*;
+import static org.samo_lego.blacksmiths.Blacksmiths.LOGGER;
+import static org.samo_lego.blacksmiths.Blacksmiths.MOD_ID;
 import static org.samo_lego.taterzens.Taterzens.GSON;
 
 public class SmithyConfig implements IBrigadierConfigurator {
@@ -34,6 +36,12 @@ public class SmithyConfig implements IBrigadierConfigurator {
     public boolean workInUnloadedChunks = true;
 
     public Permissions permissions = new Permissions();
+
+    @SerializedName("// How much does each durability point cost.")
+    public final String _comment_costPerDurabilityPoint = "";
+    @SerializedName("cost_per_durability_point")
+    public double costPerDurabilityPoint = 0.1D;
+
     public static class Permissions {
 
         @SerializedName("// Permission level required for blacksmiths command.")
@@ -99,6 +107,6 @@ public class SmithyConfig implements IBrigadierConfigurator {
 
     @Override
     public void save() {
-        this.saveConfigFile(INSTANCE.getConfigFile());
+        this.saveConfigFile(Blacksmiths.getInstance().getConfigFile());
     }
 }
