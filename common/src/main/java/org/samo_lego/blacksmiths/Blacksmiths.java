@@ -3,7 +3,7 @@ package org.samo_lego.blacksmiths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.samo_lego.blacksmiths.config.SmithyConfig;
-import org.samo_lego.blacksmiths.economy.EconomyUtil;
+import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
 import org.samo_lego.taterzens.api.TaterzensAPI;
 
@@ -19,9 +19,9 @@ public class Blacksmiths {
     private static Blacksmiths INSTANCE;
     private final Path configPath;
     public static final Logger LOGGER = LogManager.getLogger("Blacksmiths");
-    private final EconomyUtil economy;
+    private final VanillaEconomy economy;
 
-    public Blacksmiths(PlatformType platform, EconomyUtil economy) {
+    public Blacksmiths(PlatformType platform, VanillaEconomy economy) {
         INSTANCE = this;
         this.platform = platform;
         this.economy = economy;
@@ -43,7 +43,7 @@ public class Blacksmiths {
         return this.configPath.toFile();
     }
 
-    public EconomyUtil getEconomy() {
+    public VanillaEconomy getEconomy() {
         return economy;
     }
 }

@@ -7,7 +7,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.samo_lego.blacksmiths.Blacksmiths;
 import org.samo_lego.blacksmiths.PlatformType;
-import org.samo_lego.blacksmiths.forge.platform.ForgeEconomy;
+import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 import org.samo_lego.blacksmiths.forge.platform.ForgePlatform;
 
 @Mod(Blacksmiths.MOD_ID)
@@ -17,7 +17,7 @@ public class BlacksmithsForge {
 
     public BlacksmithsForge() {
         MinecraftForge.EVENT_BUS.register(this);
-        ForgeEconomy economy = new ForgeEconomy();
+        VanillaEconomy economy = new VanillaEconomy();
         new Blacksmiths(forgePlatform, economy);
     }
 

@@ -32,6 +32,12 @@ public class RepairingSlot extends Slot {
      */
     @Override
     public boolean mayPickup(Player player) {
-        return ((RepairGUI) this.container).canAfford(this.slot, System.currentTimeMillis());
+        double enough = ((RepairGUI) this.container).canAfford(this.slot, System.currentTimeMillis());
+         if (enough < 0) {
+             ((RepairGUI) this.container).close();
+            player.sendMessage(((RepairGUI) this.container).notEnoughMoneyMessage(enough * -1), player.getUUID());
+            return false;
+        }
+        return true;
     }
 }

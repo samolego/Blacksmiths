@@ -1,6 +1,10 @@
 package org.samo_lego.blacksmiths.gui;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import org.samo_lego.blacksmiths.Blacksmiths;
@@ -110,14 +114,33 @@ public class RepairGUI extends ListItemsGUI {
         if(index < this.items.size()) {
             long now = System.currentTimeMillis();
 
-            if (this.canAfford(index, now)) {
+            double enough = this.canAfford(index, now);
+            if (enough >= 0) {
                 double price = this.items.get(index).getPrice(now);
                 itemStack = this.items.remove(index).getItem(now);
                 Blacksmiths.getInstance().getEconomy().withdraw(price, this.player);
+            } else {
+                this.close();
+                this.player.sendMessage(this.notEnoughMoneyMessage(enough * -1), this.player.getUUID());
             }
         }
 
         return itemStack;
+    }
+
+    public MutableComponent notEnoughMoneyMessage(double needed) {
+        TranslatableComponent feedback;
+        if (CONFIG.costs.ignoreEconomyMod)
+            feedback =  new TranslatableComponent(CONFIG.messages.insufficentPaymentItems,
+                    new TextComponent(String.valueOf((int) needed)).withStyle(ChatFormatting.GOLD),
+                    new TextComponent(CONFIG.costs.paymentItem).withStyle(ChatFormatting.GOLD)
+            );
+        else
+            feedback = new TranslatableComponent(CONFIG.messages.insufficentCredit,
+                    new TextComponent(String.format("%.2f", needed)).withStyle(ChatFormatting.GOLD)
+            );
+
+        return feedback.withStyle(ChatFormatting.RED);
     }
 
     /**
@@ -126,7 +149,7 @@ public class RepairGUI extends ListItemsGUI {
      * @param now current time.
      * @return true if player can afford the item.
      */
-    public boolean canAfford(int index, long now) {
+    public double canAfford(int index, long now) {
         double price = this.items.get(index).getPrice(now);
         return Blacksmiths.getInstance().getEconomy().canAfford(price, this.player);
     }

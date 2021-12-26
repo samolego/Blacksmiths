@@ -36,11 +36,34 @@ public class SmithyConfig implements IBrigadierConfigurator {
     public boolean workInUnloadedChunks = true;
 
     public Permissions permissions = new Permissions();
+    public Costs costs = new Costs();
+    public Messages messages = new Messages();
 
-    @SerializedName("// How much does each durability point cost.")
-    public final String _comment_costPerDurabilityPoint = "";
-    @SerializedName("cost_per_durability_point")
-    public double costPerDurabilityPoint = 0.1D;
+    public static class Messages {
+
+        public String insufficentCredit = "You need %s more money to repair this item.";
+        public String insufficentPaymentItems = "You need %s more of %s to repair this item.";
+    }
+
+    public static class Costs {
+        @SerializedName("// Which item should count as payment. Only used if ")
+        public final String _comment_paymentItem = "";
+        @BrigadierDescription(defaultOption = "minecraft:iron_nugget")
+        @SerializedName("payment_item")
+        public String paymentItem = "minecraft:iron_nugget";
+
+        @SerializedName("// How much is the above item worth.")
+        public String _comment_itemWorth = "";
+        @SerializedName("item_worth")
+        public double itemWorth = 2.0D;
+
+        @SerializedName("// How much does each durability point cost.")
+        public final String _comment_costPerDurabilityPoint = "";
+        @SerializedName("cost_per_durability_point")
+        public double costPerDurabilityPoint = 0.2D;
+        public boolean ignoreEconomyMod = false;
+    }
+
 
     public static class Permissions {
 

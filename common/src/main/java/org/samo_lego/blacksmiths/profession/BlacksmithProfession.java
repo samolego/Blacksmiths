@@ -30,7 +30,7 @@ public class BlacksmithProfession implements TaterzenProfession {
     private final HashMap<UUID, List<RepairInventory>> inventories = new HashMap<>();
     private boolean workInUnloadedChunks = CONFIG.workInUnloadedChunks;
     private double durabilityPerSecond = CONFIG.durabilityPerSecond;
-    private double costPerDamage = CONFIG.costPerDurabilityPoint;
+    private double costPerDamage = CONFIG.costs.costPerDurabilityPoint;
 
     public BlacksmithProfession() {
     }
