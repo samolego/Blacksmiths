@@ -1,35 +1,35 @@
 modLoader = "javafml"
 loaderVersion = "[38,)"
-#issueTrackerURL = ""
-license = "Insert License Here"
+issueTrackerURL = "https://github.com/samolego/Blacksmiths/issues"
+license = "MIT"
 
 [[mods]]
-modId = "examplemod"
+modId = "blacksmiths"
 version = "${version}"
-displayName = "Example Mod"
-authors = "Me!"
+displayName = "Blacksmiths"
+authors = "samo_lego"
 description = '''
-This is an example description! Tell everyone what your mod is about!
+A Taterzens addon that brings tool-repairing-guys to Minecraft.
 '''
-#logoFile = ""
+logoFile = "blacksmiths_icon.png"
 
-[[dependencies.examplemod]]
+[[dependencies.blacksmiths]]
 modId = "forge"
 mandatory = true
 versionRange = "[38,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.examplemod]]
+[[dependencies.blacksmiths]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.18,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.examplemod]]
-modId = "architectury"
+[[dependencies.blacksmiths]]
+modId = "taterzens"
 mandatory = true
-versionRange = "[3.2.47,)"
+versionRange = "[1.6.5,)"
 ordering = "AFTER"
 side = "BOTH"
