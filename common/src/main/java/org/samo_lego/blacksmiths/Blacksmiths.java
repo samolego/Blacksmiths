@@ -14,29 +14,33 @@ public class Blacksmiths {
 
     public static final String MOD_ID = "blacksmiths";
     public static SmithyConfig CONFIG = null;
-    private final PlatformType platform;
 
     private static Blacksmiths INSTANCE;
     private final Path configPath;
     public static final Logger LOGGER = LogManager.getLogger("Blacksmiths");
-    private final VanillaEconomy economy;
+    private VanillaEconomy economy;
 
     public Blacksmiths(PlatformType platform, VanillaEconomy economy) {
         INSTANCE = this;
-        this.platform = platform;
         this.economy = economy;
-        this.configPath = Path.of(platform.getConfigPath() + "/Taterzens/blacksmiths.json");
-        CONFIG = SmithyConfig.loadConfigFile(INSTANCE.getConfigFile());
+        this.configPath = Path.of(getConfigPath(platform));
+
+        if (CONFIG == null)
+            initConfig(platform);
 
         TaterzensAPI.registerProfession(BlacksmithProfession.ID, BlacksmithProfession::new);
     }
 
-    public static Blacksmiths getInstance() {
-        return INSTANCE;
+    public static void initConfig(PlatformType platform) {
+        CONFIG = SmithyConfig.loadConfigFile(new File(getConfigPath(platform)));
     }
 
-    public PlatformType getPlatform() {
-        return platform;
+    private static String getConfigPath(PlatformType platform) {
+        return platform.getConfigPath() + "/Taterzens/blacksmiths.json";
+    }
+
+    public static Blacksmiths getInstance() {
+        return INSTANCE;
     }
 
     public File getConfigFile() {
@@ -45,5 +49,9 @@ public class Blacksmiths {
 
     public VanillaEconomy getEconomy() {
         return economy;
+    }
+
+    public void setEconomy(VanillaEconomy economy) {
+        this.economy = economy;
     }
 }

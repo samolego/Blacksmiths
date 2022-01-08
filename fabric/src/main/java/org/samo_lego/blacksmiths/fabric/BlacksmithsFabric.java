@@ -8,13 +8,17 @@ import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 import org.samo_lego.blacksmiths.fabric.platform.FabricPlatform;
 import org.samo_lego.blacksmiths.fabric.platform.GrandEconomyImpl;
 
+import static org.samo_lego.blacksmiths.Blacksmiths.CONFIG;
+
 public class BlacksmithsFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         FabricPlatform platform = new FabricPlatform();
 
+        Blacksmiths.initConfig(platform);
+
         VanillaEconomy economy;
-        if (FabricLoader.getInstance().isModLoaded("grandeconomy"))
+        if (FabricLoader.getInstance().isModLoaded("grandeconomy") && CONFIG.costs.ignoreEconomyMod)
             economy = new GrandEconomyImpl();
         else
             economy = new VanillaEconomy();

@@ -7,8 +7,6 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 
-import static org.samo_lego.blacksmiths.Blacksmiths.CONFIG;
-
 public class GrandEconomyImpl extends VanillaEconomy {
     private final CurrencyAPI currencyApi;
 
@@ -18,18 +16,12 @@ public class GrandEconomyImpl extends VanillaEconomy {
 
     @Override
     public double canAfford(double amount, ServerPlayer player) {
-        if (CONFIG.costs.ignoreEconomyMod) {
-            return super.canAfford(amount, player);
-        }
         return this.currencyApi.getBalance(player.getUUID(), true) - amount;
     }
 
     @Override
     public void withdraw(double amount, ServerPlayer player) {
-        if (CONFIG.costs.ignoreEconomyMod)
-            super.withdraw(amount, player);
-        else
-            this.currencyApi.addToBalance(player.getUUID(), -amount, true);
+        this.currencyApi.addToBalance(player.getUUID(), -amount, true);
     }
 
     @Override
@@ -39,9 +31,6 @@ public class GrandEconomyImpl extends VanillaEconomy {
 
     @Override
     public MutableComponent getCurrencyFormat(double amount) {
-        if (CONFIG.costs.ignoreEconomyMod) {
-            return super.getCurrencyFormat(amount);
-        }
         return new TextComponent(this.currencyApi.formatCurrency(amount));
     }
 }

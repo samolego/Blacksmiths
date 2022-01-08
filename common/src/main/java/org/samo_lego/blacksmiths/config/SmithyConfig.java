@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import org.samo_lego.blacksmiths.Blacksmiths;
 import org.samo_lego.config2brigadier.IBrigadierConfigurator;
 import org.samo_lego.config2brigadier.annotation.BrigadierDescription;
+import org.samo_lego.config2brigadier.annotation.BrigadierExcluded;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -68,6 +69,11 @@ public class SmithyConfig implements IBrigadierConfigurator {
         public final String _comment_costPerDurabilityPoint = "";
         @SerializedName("cost_per_durability_point")
         public double costPerDurabilityPoint = 0.2D;
+
+        @SerializedName("// Whether to force item-based transactions.")
+        public final String _comment_ignoreEconomyMod = "";
+        @BrigadierExcluded
+        @SerializedName("ignore_economy_mod")
         public boolean ignoreEconomyMod = false;
     }
 
