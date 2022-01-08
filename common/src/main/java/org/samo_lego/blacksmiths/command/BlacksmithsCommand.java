@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.TranslatableComponent;
 import org.samo_lego.blacksmiths.Blacksmiths;
+import org.samo_lego.taterzens.Taterzens;
 
 import static net.minecraft.commands.Commands.literal;
 import static org.samo_lego.blacksmiths.Blacksmiths.CONFIG;
@@ -15,19 +16,19 @@ public class BlacksmithsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {
         LiteralCommandNode<CommandSourceStack> blacksmiths = dispatcher.register(
                 literal("blacksmiths")
-                    .requires(source -> Blacksmiths.getInstance().getPlatform().hasPermission(source, "blacksmiths.command.blacksmiths", CONFIG.permissions.blacksmithsLevel))
+                    .requires(source -> Taterzens.getInstance().getPlatform().checkPermission(source, "blacksmiths.command.blacksmiths", CONFIG.permissions.blacksmithsLevel))
         );
 
         // Node for config editing
         LiteralCommandNode<CommandSourceStack> config = literal("config")
-                .requires(source -> Blacksmiths.getInstance().getPlatform().hasPermission(source, "blacksmiths.command.blacksmiths.config", 0))
+                .requires(source -> Taterzens.getInstance().getPlatform().checkPermission(source, "blacksmiths.command.blacksmiths.config", 0))
                 .then(literal("reload")
-                        .requires(source -> Blacksmiths.getInstance().getPlatform().hasPermission(source, "blacksmiths.command.blacksmiths.config.reload", 0))
+                        .requires(source -> Taterzens.getInstance().getPlatform().checkPermission(source, "blacksmiths.command.blacksmiths.config.reload", 0))
                         .executes(BlacksmithsCommand::reloadConfig)
                 )
                 .build();
         LiteralCommandNode<CommandSourceStack> edit = literal("edit")
-                .requires(source -> Blacksmiths.getInstance().getPlatform().hasPermission(source, "blacksmiths.command.blacksmiths.config.edit", 0))
+                .requires(source -> Taterzens.getInstance().getPlatform().checkPermission(source, "blacksmiths.command.blacksmiths.config.edit", 0))
                 .build();
 
         CONFIG.generateCommand(edit);

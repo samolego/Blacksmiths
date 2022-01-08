@@ -1,14 +1,19 @@
 package org.samo_lego.blacksmiths.profession;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.samo_lego.blacksmiths.Blacksmiths;
 import org.samo_lego.blacksmiths.gui.RepairGUI;
 import org.samo_lego.blacksmiths.inventory.RepairInventory;
 import org.samo_lego.taterzens.api.professions.TaterzenProfession;
@@ -32,26 +37,31 @@ public class BlacksmithProfession implements TaterzenProfession {
     private double durabilityPerSecond = CONFIG.durabilityPerSecond;
     private double costPerDamage = CONFIG.costs.costPerDurabilityPoint;
 
-    public BlacksmithProfession() {
-    }
-
     public BlacksmithProfession(TaterzenNPC npc) {
         this.npc = npc;
     }
 
-
     @Override
     public InteractionResult interactAt(Player player, Vec3 pos, InteractionHand hand) {
-        List<RepairInventory> invs = this.inventories.computeIfAbsent(player.getUUID(), k -> new ArrayList<>());
-        new RepairGUI((ServerPlayer) player, this, this.npc.getName(), invs).open();
-        return InteractionResult.CONSUME;
-    }
+        ItemStack handItem = player.getItemInHand(hand);
 
-    @Override
-    public TaterzenProfession create(TaterzenNPC taterzen) {
-        BlacksmithProfession profession = new BlacksmithProfession();
-        profession.npc = taterzen;
-        return profession;
+        // Check if player is holding a damaged item
+        if (!handItem.isEmpty() && handItem.isDamaged()) {
+            // Get the cost for item repair
+            double cost = handItem.getDamageValue() * this.getCostPerDamage();
+            double convertedCost = Blacksmiths.getInstance().getEconomy().getItemConversionCost(cost);
+
+            Component msg = Blacksmiths.getInstance().getEconomy().getCurrencyFormat(convertedCost);
+            player.sendMessage(
+                    new TranslatableComponent(CONFIG.messages.cost, msg.copy().withStyle(ChatFormatting.GOLD))
+                            .withStyle(ChatFormatting.BLUE),
+                    this.npc.getUUID()
+            );
+        } else {
+            List<RepairInventory> invs = this.inventories.computeIfAbsent(player.getUUID(), k -> new ArrayList<>());
+            new RepairGUI((ServerPlayer) player, this, this.npc.getName(), invs).open();
+        }
+        return InteractionResult.CONSUME;
     }
 
     @Override

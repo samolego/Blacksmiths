@@ -1,13 +1,16 @@
 package org.samo_lego.blacksmiths.gui;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import org.samo_lego.blacksmiths.Blacksmiths;
+import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 import org.samo_lego.blacksmiths.inventory.RepairInventory;
 import org.samo_lego.blacksmiths.inventory.RepairingSlot;
 import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
@@ -75,6 +78,8 @@ public class RepairGUI extends ListItemsGUI {
 
         if(index < this.items.size()) {
             RepairInventory inv = this.items.get(index);
+
+            int startDmg = inv.getInitialDamage();
             if (CONFIG.forceAccurate) {
                 itemStack = inv.getItem(System.currentTimeMillis());
             } else {
@@ -89,6 +94,34 @@ public class RepairGUI extends ListItemsGUI {
                     this.tickCounter = 0;
                 }
             }
+
+            ItemStack copy = itemStack.copy();
+            CompoundTag nbt = copy.getTag();
+
+            if (nbt != null) {
+                // Calculate cost
+                double amount = (startDmg - itemStack.getDamageValue()) * this.profession.getCostPerDamage();
+                VanillaEconomy economy = Blacksmiths.getInstance().getEconomy();
+
+                double cost = economy.getItemConversionCost(amount);
+                MutableComponent costLore = economy.getCurrencyFormat(cost);
+                boolean canAfford = Blacksmiths.getInstance().getEconomy().canAfford(cost, this.player) >= 0;
+
+                CompoundTag nbtDisplay = nbt.getCompound(ItemStack.TAG_DISPLAY);
+                ListTag nbtLore = new ListTag();
+
+                nbtLore.add(StringTag.valueOf(
+                        Component.Serializer.toJson(
+                                costLore.withStyle(canAfford ? ChatFormatting.GREEN : ChatFormatting.RED)
+                        )
+                ));
+
+                nbtDisplay.put(ItemStack.TAG_LORE, nbtLore);
+                nbt.put(ItemStack.TAG_DISPLAY, nbtDisplay);
+                copy.setTag(nbt);
+            }
+
+            itemStack = copy;
         } else {
             itemStack = ItemStack.EMPTY;
         }
@@ -117,6 +150,7 @@ public class RepairGUI extends ListItemsGUI {
             double enough = this.canAfford(index, now);
             if (enough >= 0) {
                 double price = this.items.get(index).getPrice(now);
+
                 itemStack = this.items.remove(index).getItem(now);
                 Blacksmiths.getInstance().getEconomy().withdraw(price, this.player);
             } else {
@@ -129,25 +163,21 @@ public class RepairGUI extends ListItemsGUI {
     }
 
     public MutableComponent notEnoughMoneyMessage(double needed) {
-        TranslatableComponent feedback;
-        if (CONFIG.costs.ignoreEconomyMod)
-            feedback =  new TranslatableComponent(CONFIG.messages.insufficentPaymentItems,
-                    new TextComponent(String.valueOf((int) needed)).withStyle(ChatFormatting.GOLD),
-                    new TextComponent(CONFIG.costs.paymentItem).withStyle(ChatFormatting.GOLD)
-            );
-        else
-            feedback = new TranslatableComponent(CONFIG.messages.insufficentCredit,
-                    new TextComponent(String.format("%.2f", needed)).withStyle(ChatFormatting.GOLD)
-            );
+        final String message = CONFIG.messages.insufficentCredit;
+        if (!CONFIG.costs.ignoreEconomyMod) {
+            // Round needed to 2 decimals
+            needed = Math.round(needed * 100) / 100.0;
+        }
+        final MutableComponent formatted = Blacksmiths.getInstance().getEconomy().getCurrencyFormat(needed);
 
-        return feedback.withStyle(ChatFormatting.RED);
+        return new TranslatableComponent(message, formatted.withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.RED);
     }
 
     /**
      * Whether player can afford the item at the given index.
      * @param index index of the item to check.
      * @param now current time.
-     * @return true if player can afford the item.
+     * @return negative number if player needs more money, positive number if player has enough money, 0 if player has exact amount of money.
      */
     public double canAfford(int index, long now) {
         double price = this.items.get(index).getPrice(now);

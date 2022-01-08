@@ -14,6 +14,4 @@ public abstract class PlatformType {
         BlacksmithCommand.register();
         BlacksmithsCommand.register(dispatcher, dedicated);
     }
-
-    public abstract boolean hasPermission(CommandSourceStack src, String permission, int fallback);
 }

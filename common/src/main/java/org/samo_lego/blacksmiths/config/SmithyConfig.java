@@ -5,7 +5,14 @@ import org.samo_lego.blacksmiths.Blacksmiths;
 import org.samo_lego.config2brigadier.IBrigadierConfigurator;
 import org.samo_lego.config2brigadier.annotation.BrigadierDescription;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
 import static org.samo_lego.blacksmiths.Blacksmiths.LOGGER;
@@ -41,8 +48,8 @@ public class SmithyConfig implements IBrigadierConfigurator {
 
     public static class Messages {
 
-        public String insufficentCredit = "You need %s more money to repair this item.";
-        public String insufficentPaymentItems = "You need %s more of %s to repair this item.";
+        public String insufficentCredit = "You still need %s more to repair this item.";
+        public String cost = "Fully repairing the item will cost you %s.";
     }
 
     public static class Costs {
@@ -55,7 +62,7 @@ public class SmithyConfig implements IBrigadierConfigurator {
         @SerializedName("// How much is the above item worth.")
         public String _comment_itemWorth = "";
         @SerializedName("item_worth")
-        public double itemWorth = 2.0D;
+        public double itemWorth = 2.5D;
 
         @SerializedName("// How much does each durability point cost.")
         public final String _comment_costPerDurabilityPoint = "";

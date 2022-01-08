@@ -10,8 +10,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
-import org.samo_lego.blacksmiths.Blacksmiths;
 import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
+import org.samo_lego.taterzens.Taterzens;
 import org.samo_lego.taterzens.api.professions.TaterzenProfession;
 import org.samo_lego.taterzens.commands.NpcCommand;
 
@@ -27,21 +27,21 @@ public class BlacksmithCommand {
     public static void register() {
 
         LiteralCommandNode<CommandSourceStack> blacksmithNode = literal("blacksmith")
-                .requires(src -> Blacksmiths.getInstance().getPlatform().hasPermission(src, "blacksmiths.command.blacksmith", CONFIG.permissions.blacksmithLevel))
+                .requires(src -> Taterzens.getInstance().getPlatform().checkPermission(src, "blacksmiths.command.blacksmith", CONFIG.permissions.blacksmithLevel))
                 .then(literal("workInUnloadedChunks")
-                        .requires(src -> Blacksmiths.getInstance().getPlatform().hasPermission(src, "blacksmiths.command.blacksmith.work_in_unloaded_chunks", 0))
+                        .requires(src -> Taterzens.getInstance().getPlatform().checkPermission(src, "blacksmiths.command.blacksmith.work_in_unloaded_chunks", 0))
                         .then(argument("value", BoolArgumentType.bool())
                             .executes(BlacksmithCommand::workInUnloadedChunks)
                         )
                 )
                 .then(literal("durabilityPerSecond")
-                        .requires(src -> Blacksmiths.getInstance().getPlatform().hasPermission(src, "blacksmiths.command.blacksmith.durability_per_second", 0))
+                        .requires(src -> Taterzens.getInstance().getPlatform().checkPermission(src, "blacksmiths.command.blacksmith.durability_per_second", 0))
                         .then(argument("value", DoubleArgumentType.doubleArg(0.0D))
                                 .executes(BlacksmithCommand::durabilityPerSecond)
                         )
                 )
                 .then(literal("costPerDurabilityPoint")
-                        .requires(src -> Blacksmiths.getInstance().getPlatform().hasPermission(src, "blacksmiths.command.blacksmith.cost_per_durability_point", 0))
+                        .requires(src -> Taterzens.getInstance().getPlatform().checkPermission(src, "blacksmiths.command.blacksmith.cost_per_durability_point", 0))
                         .then(argument("value", DoubleArgumentType.doubleArg(0.0D))
                                 .executes(BlacksmithCommand::durabilityCostPerPoint)
                         )

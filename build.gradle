@@ -10,6 +10,15 @@ architectury {
     minecraft = rootProject.minecraft_version
 }
 
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "ParchmentMC"
+        url = "https://maven.parchmentmc.net/"
+    }
+}
+
 subprojects {
     apply plugin: "dev.architectury.loom"
 
@@ -19,7 +28,11 @@ subprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        mappings loom.officialMojangMappings()
+        mappings loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-1.18.1:2021.12.19@zip")
+        }
+
     }
 }
 
@@ -44,6 +57,9 @@ allprojects {
 
         // nucleoid maven
         maven { url "https://maven.nucleoid.xyz" }
+
+        // luckperms maven
+        maven { url "https://oss.sonatype.org/content/repositories/public/" }
     }
 
     tasks.withType(JavaCompile) {

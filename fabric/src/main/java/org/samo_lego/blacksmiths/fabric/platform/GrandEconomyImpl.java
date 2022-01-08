@@ -2,6 +2,8 @@ package org.samo_lego.blacksmiths.fabric.platform;
 
 import dev.the_fireplace.annotateddi.api.DIContainer;
 import dev.the_fireplace.grandeconomy.api.injectables.CurrencyAPI;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 
@@ -24,9 +26,22 @@ public class GrandEconomyImpl extends VanillaEconomy {
 
     @Override
     public void withdraw(double amount, ServerPlayer player) {
-        if (CONFIG.costs.ignoreEconomyMod) {
+        if (CONFIG.costs.ignoreEconomyMod)
             super.withdraw(amount, player);
+        else
+            this.currencyApi.addToBalance(player.getUUID(), -amount, true);
+    }
+
+    @Override
+    public double getItemConversionCost(double amount) {
+        return amount;
+    }
+
+    @Override
+    public MutableComponent getCurrencyFormat(double amount) {
+        if (CONFIG.costs.ignoreEconomyMod) {
+            return super.getCurrencyFormat(amount);
         }
-        this.currencyApi.addToBalance(player.getUUID(), -amount, true);
+        return new TextComponent(this.currencyApi.formatCurrency(amount));
     }
 }

@@ -51,7 +51,7 @@ public class RepairInventory {
             this.repairingItem.setDamageValue(dmg);
             return this.repairingItem;
         }
-        return repairingItem;
+        return this.repairingItem;
     }
 
 
@@ -110,5 +110,9 @@ public class RepairInventory {
         main.putBoolean("Finished", this.finished);
 
         return main;
+    }
+
+    public int getInitialDamage() {
+        return this.startDamage;
     }
 }

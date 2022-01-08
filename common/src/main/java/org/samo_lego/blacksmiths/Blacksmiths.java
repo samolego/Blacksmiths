@@ -28,7 +28,7 @@ public class Blacksmiths {
         this.configPath = Path.of(platform.getConfigPath() + "/Taterzens/blacksmiths.json");
         CONFIG = SmithyConfig.loadConfigFile(INSTANCE.getConfigFile());
 
-        TaterzensAPI.registerProfession(BlacksmithProfession.ID, new BlacksmithProfession());
+        TaterzensAPI.registerProfession(BlacksmithProfession.ID, BlacksmithProfession::new);
     }
 
     public static Blacksmiths getInstance() {
