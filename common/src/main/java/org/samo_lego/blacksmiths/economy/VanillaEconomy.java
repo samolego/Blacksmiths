@@ -31,7 +31,6 @@ public class VanillaEconomy {
     public void withdraw(double amount, ServerPlayer player) {
         Item item = this.getRequiredItem();
         int minNeeded = (int) this.getItemConversionCost(amount);
-        //System.out.println(minNeeded + " = " + amount + " / "+ CONFIG.costs.itemWorth);
 
         player.getInventory().clearOrCountMatchingItems(stack -> stack.getItem().equals(item), minNeeded, player.inventoryMenu.getCraftSlots());
 
