@@ -77,6 +77,11 @@ public class SmithyConfig implements IBrigadierConfigurator {
         @BrigadierExcluded
         @SerializedName("ignore_economy_mod")
         public boolean ignoreEconomyMod = false;
+
+        @SerializedName("// Whether to add lore with cost info to the item.")
+        public final String _comment_addLore = "";
+        @SerializedName("add_lore")
+        public boolean addLore = true;
     }
 
 

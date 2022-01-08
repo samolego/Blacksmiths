@@ -95,33 +95,37 @@ public class RepairGUI extends ListItemsGUI {
                 }
             }
 
-            ItemStack copy = itemStack.copy();
-            CompoundTag nbt = copy.getTag();
+            // Adds lore with current cost to the item.
+            if (CONFIG.costs.addLore) {
+                ItemStack copy = itemStack.copy();
+                CompoundTag nbt = copy.getTag();
 
-            if (nbt != null) {
-                // Calculate cost
-                double amount = (startDmg - itemStack.getDamageValue()) * this.profession.getCostPerDamage();
-                VanillaEconomy economy = Blacksmiths.getInstance().getEconomy();
+                if (nbt != null) {
+                    // Calculate cost
+                    double amount = (startDmg - itemStack.getDamageValue()) * this.profession.getCostPerDamage();
+                    VanillaEconomy economy = Blacksmiths.getInstance().getEconomy();
 
-                double cost = economy.getItemConversionCost(amount);
-                MutableComponent costLore = economy.getCurrencyFormat(cost);
-                boolean canAfford = Blacksmiths.getInstance().getEconomy().canAfford(cost, this.player) >= 0;
+                    double cost = economy.getItemConversionCost(amount);
+                    MutableComponent costLore = economy.getCurrencyFormat(cost);
+                    boolean canAfford = Blacksmiths.getInstance().getEconomy().canAfford(cost, this.player) >= 0;
 
-                CompoundTag nbtDisplay = nbt.getCompound(ItemStack.TAG_DISPLAY);
-                ListTag nbtLore = new ListTag();
+                    CompoundTag nbtDisplay = nbt.getCompound(ItemStack.TAG_DISPLAY);
+                    ListTag nbtLore = new ListTag();
 
-                nbtLore.add(StringTag.valueOf(
-                        Component.Serializer.toJson(
-                                costLore.withStyle(canAfford ? ChatFormatting.GREEN : ChatFormatting.RED)
-                        )
-                ));
+                    nbtLore.add(StringTag.valueOf(
+                            Component.Serializer.toJson(
+                                    costLore.withStyle(canAfford ? ChatFormatting.GREEN : ChatFormatting.RED)
+                            )
+                    ));
 
-                nbtDisplay.put(ItemStack.TAG_LORE, nbtLore);
-                nbt.put(ItemStack.TAG_DISPLAY, nbtDisplay);
-                copy.setTag(nbt);
+                    nbtDisplay.put(ItemStack.TAG_LORE, nbtLore);
+                    nbt.put(ItemStack.TAG_DISPLAY, nbtDisplay);
+                    copy.setTag(nbt);
+                }
+
+                itemStack = copy;
             }
 
-            itemStack = copy;
         } else {
             itemStack = ItemStack.EMPTY;
         }
