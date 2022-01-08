@@ -18,7 +18,7 @@ public class BlacksmithsFabric implements ModInitializer {
         Blacksmiths.initConfig(platform);
 
         VanillaEconomy economy;
-        if (FabricLoader.getInstance().isModLoaded("grandeconomy") && CONFIG.costs.ignoreEconomyMod)
+        if (FabricLoader.getInstance().isModLoaded("grandeconomy") && !CONFIG.costs.ignoreEconomyMod)
             economy = new GrandEconomyImpl();
         else
             economy = new VanillaEconomy();

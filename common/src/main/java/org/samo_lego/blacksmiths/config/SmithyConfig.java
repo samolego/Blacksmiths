@@ -2,6 +2,7 @@ package org.samo_lego.blacksmiths.config;
 
 import com.google.gson.annotations.SerializedName;
 import org.samo_lego.blacksmiths.Blacksmiths;
+import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 import org.samo_lego.config2brigadier.IBrigadierConfigurator;
 import org.samo_lego.config2brigadier.annotation.BrigadierDescription;
 import org.samo_lego.config2brigadier.annotation.BrigadierExcluded;
@@ -16,6 +17,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
+import static org.apache.logging.log4j.LogManager.getLogger;
 import static org.samo_lego.blacksmiths.Blacksmiths.LOGGER;
 import static org.samo_lego.blacksmiths.Blacksmiths.MOD_ID;
 import static org.samo_lego.taterzens.Taterzens.GSON;
@@ -138,7 +140,15 @@ public class SmithyConfig implements IBrigadierConfigurator {
      */
     public void reload(File file) {
         SmithyConfig newConfig = loadConfigFile(file);
+
+        // We can support GrandEconomy -> VanillaEconomy during runtime, but not the other way around.
+        if (newConfig.costs.ignoreEconomyMod && !this.costs.ignoreEconomyMod) {
+            Blacksmiths.getInstance().setEconomy(new VanillaEconomy());
+        } else if (!newConfig.costs.ignoreEconomyMod && this.costs.ignoreEconomyMod) {
+            getLogger(MOD_ID).warn("Enabling GrandEconomy support during runtime is not supported. Disabling it.");
+        }
         this.reload(newConfig);
+        this.save();
     }
 
     @Override
