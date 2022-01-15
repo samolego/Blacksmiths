@@ -1,15 +1,31 @@
 # Blacksmiths
 Taterzen addon that brings tool-repairing-guys to Minecraft.
 
-https://user-images.githubusercontent.com/34912839/146683889-ea5bd2b3-1b71-4b98-ba21-e00bfa4e6ef5.mp4
+## Docs
+
+See https://samolego.github.io/Taterzens/latest/professions/blacksmiths/
+
+https://user-images.githubusercontent.com/34912839/149629095-02985d3d-0cb9-4c2b-bcdd-24c87dc97e80.mp4
 
 ## Features
 * time-based repairs (working even when in **unloaded** chunks)
+* per-taterzen settings
+* changing item cost
+* [GrandEconomy](https://www.curseforge.com/minecraft/mc-mods/grand-economy) support
 * live durability updating
 * you can change any of above things in config file (`config/Taterzens/blacksmiths.json`)
 
 
 ## Permissions
-// Include permissions from BlacksmithCommand.java
-* blacksmiths.command.blacksmith
-* blacksmiths.command.blacksmith.work_in_unloaded_chunks
+
+### NPC editing (via `/profession` command)
+* `blacksmiths.command.blacksmith`
+* `blacksmiths.command.blacksmith.durability_per_second`
+* `blacksmiths.command.blacksmith.cost_per_durability_point`
+* `blacksmiths.command.blacksmith.work_in_unloaded_chunks`
+
+### Admin commands
+* `blacksmiths.command.blacksmiths`
+* `blacksmiths.command.blacksmiths.config`
+* `blacksmiths.command.blacksmiths.config.edit`
+* `blacksmiths.command.blacksmiths.config.reload`
