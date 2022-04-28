@@ -21,7 +21,7 @@
   },
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.18",
-    "taterzens": ">=1.8.0"
+    "minecraft": ">=1.18.2",
+    "taterzens": ">=1.9.0"
   }
 }
