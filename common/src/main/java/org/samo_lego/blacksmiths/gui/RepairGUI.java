@@ -14,7 +14,7 @@ import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 import org.samo_lego.blacksmiths.inventory.RepairInventory;
 import org.samo_lego.blacksmiths.inventory.RepairingSlot;
 import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
-import org.samo_lego.taterzens.gui.ListItemsGUI;
+import org.samo_lego.taterzens.fabric.gui.ListItemsGUI;
 
 import java.util.List;
 

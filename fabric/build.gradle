@@ -42,7 +42,6 @@ dependencies {
     modImplementation("com.github.samolego.Taterzens:taterzens-fabric:${project.taterzens}")
 
     modCompileOnly "dev.the-fireplace:Grand-Economy:${project.grandeconomy_version}:api"
-    modRuntime "dev.the-fireplace:Grand-Economy:${project.grandeconomy_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
