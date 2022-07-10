@@ -13,7 +13,7 @@ import static net.minecraft.commands.Commands.literal;
 import static org.samo_lego.blacksmiths.Blacksmiths.CONFIG;
 
 public class BlacksmithsCommand {
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> blacksmiths = dispatcher.register(
                 literal("blacksmiths")
                     .requires(source -> Taterzens.getInstance().getPlatform().checkPermission(source, "blacksmiths.command.blacksmiths", CONFIG.permissions.blacksmithsLevel))

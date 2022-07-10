@@ -10,8 +10,8 @@ import java.nio.file.Path;
 public abstract class PlatformType {
     public abstract Path getConfigPath();
 
-    public void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {
+    public void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
         BlacksmithCommand.register();
-        BlacksmithsCommand.register(dispatcher, dedicated);
+        BlacksmithsCommand.register(dispatcher);
     }
 }

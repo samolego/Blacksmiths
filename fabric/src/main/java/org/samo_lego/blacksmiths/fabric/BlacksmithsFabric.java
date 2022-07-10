@@ -1,7 +1,7 @@
 package org.samo_lego.blacksmiths.fabric;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import org.samo_lego.blacksmiths.Blacksmiths;
 import org.samo_lego.blacksmiths.economy.VanillaEconomy;
@@ -25,6 +25,6 @@ public class BlacksmithsFabric implements ModInitializer {
         }
 
         new Blacksmiths(platform, economy);
-        CommandRegistrationCallback.EVENT.register(platform::registerCommands);
+        CommandRegistrationCallback.EVENT.register((dispatcher, assets, selection) -> platform.registerCommands(dispatcher));
     }
 }
