@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -52,11 +51,9 @@ public class BlacksmithProfession implements TaterzenProfession {
             double convertedCost = Blacksmiths.getInstance().getEconomy().getItemConversionCost(cost);
 
             Component msg = Blacksmiths.getInstance().getEconomy().getCurrencyFormat(convertedCost);
-            player.sendMessage(
-                    new TranslatableComponent(CONFIG.messages.cost, msg.copy().withStyle(ChatFormatting.GOLD))
-                            .withStyle(ChatFormatting.BLUE),
-                    this.npc.getUUID()
-            );
+            player.sendSystemMessage(
+                    Component.translatable(CONFIG.messages.cost, msg.copy().withStyle(ChatFormatting.GOLD))
+                            .withStyle(ChatFormatting.BLUE));
         } else {
             List<RepairInventory> invs = this.inventories.computeIfAbsent(player.getUUID(), k -> new ArrayList<>());
             new RepairGUI((ServerPlayer) player, this, this.npc.getName(), invs).open();

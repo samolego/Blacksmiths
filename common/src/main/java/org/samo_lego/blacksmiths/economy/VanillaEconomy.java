@@ -1,8 +1,8 @@
 package org.samo_lego.blacksmiths.economy;
 
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -45,7 +45,7 @@ public class VanillaEconomy {
 
     public MutableComponent getCurrencyFormat(double amount) {
         Item item = this.getRequiredItem();
-        return new TextComponent(String.format("%d ", (int) amount)).append(item.getName(item.getDefaultInstance()));
+        return Component.literal(String.format("%d ", (int) amount)).append(item.getName(item.getDefaultInstance()));
     }
 
     public Item getRequiredItem() {

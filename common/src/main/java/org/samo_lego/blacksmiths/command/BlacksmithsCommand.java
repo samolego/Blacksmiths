@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import org.samo_lego.blacksmiths.Blacksmiths;
 import org.samo_lego.taterzens.Taterzens;
 
@@ -39,7 +39,7 @@ public class BlacksmithsCommand {
 
     private static int reloadConfig(CommandContext<CommandSourceStack> context) {
         CONFIG.reload(Blacksmiths.getInstance().getConfigFile());
-        context.getSource().sendSuccess(new TranslatableComponent("gui.done").withStyle(ChatFormatting.GREEN), false);
+        context.getSource().sendSuccess(Component.translatable("gui.done").withStyle(ChatFormatting.GREEN), false);
         return 1;
     }
 }

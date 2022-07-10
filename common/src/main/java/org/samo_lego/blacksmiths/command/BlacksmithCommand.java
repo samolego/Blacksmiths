@@ -7,8 +7,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
 import org.samo_lego.taterzens.Taterzens;
@@ -22,7 +22,7 @@ import static org.samo_lego.taterzens.commands.ProfessionCommand.PROFESSION_COMM
 
 public class BlacksmithCommand {
 
-    private static final MutableComponent SUCCESS = new TranslatableComponent("gui.done").append(".").withStyle(ChatFormatting.GREEN);
+    private static final MutableComponent SUCCESS = Component.translatable("gui.done").append(".").withStyle(ChatFormatting.GREEN);
 
     public static void register() {
 
@@ -59,7 +59,7 @@ public class BlacksmithCommand {
             TaterzenProfession profession = taterzen.getProfession(BlacksmithProfession.ID);
             if (profession instanceof BlacksmithProfession blacksmith) {
                 blacksmith.setCostPerDamage(value);
-                entity.sendMessage(SUCCESS, taterzen.getUUID());
+                entity.sendSystemMessage(SUCCESS);
             }
         });
     }
@@ -71,7 +71,7 @@ public class BlacksmithCommand {
             TaterzenProfession profession = taterzen.getProfession(BlacksmithProfession.ID);
             if (profession instanceof BlacksmithProfession blacksmith) {
                 blacksmith.setDurabilityPerSecond(value);
-                entity.sendMessage(SUCCESS, taterzen.getUUID());
+                entity.sendSystemMessage(SUCCESS);
             }
         });
     }
@@ -83,7 +83,7 @@ public class BlacksmithCommand {
             TaterzenProfession profession = taterzen.getProfession(BlacksmithProfession.ID);
             if (profession instanceof BlacksmithProfession blacksmith) {
                 blacksmith.setWorkInUnloadedChunks(value);
-                entity.sendMessage(SUCCESS, taterzen.getUUID());
+                entity.sendSystemMessage(SUCCESS);
             }
         });
     }

@@ -6,7 +6,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import org.samo_lego.blacksmiths.Blacksmiths;
@@ -14,7 +13,7 @@ import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 import org.samo_lego.blacksmiths.inventory.RepairInventory;
 import org.samo_lego.blacksmiths.inventory.RepairingSlot;
 import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
-import org.samo_lego.taterzens.fabric.gui.ListItemsGUI;
+import org.samo_lego.taterzens.gui.ListItemsGUI;
 
 import java.util.List;
 
@@ -159,7 +158,7 @@ public class RepairGUI extends ListItemsGUI {
                 Blacksmiths.getInstance().getEconomy().withdraw(price, this.player);
             } else {
                 this.close();
-                this.player.sendMessage(this.notEnoughMoneyMessage(enough * -1), this.player.getUUID());
+                this.player.sendSystemMessage(this.notEnoughMoneyMessage(enough * -1));
             }
         }
 
@@ -174,7 +173,7 @@ public class RepairGUI extends ListItemsGUI {
         }
         final MutableComponent formatted = Blacksmiths.getInstance().getEconomy().getCurrencyFormat(needed);
 
-        return new TranslatableComponent(message, formatted.withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.RED);
+        return Component.translatable(message, formatted.withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.RED);
     }
 
     /**

@@ -25,8 +25,9 @@ public class Blacksmiths {
         this.economy = economy;
         this.configPath = Path.of(getConfigPath(platform));
 
-        if (CONFIG == null)
+        if (CONFIG == null) {
             initConfig(platform);
+        }
 
         TaterzensAPI.registerProfession(BlacksmithProfession.ID, BlacksmithProfession::new);
     }
