@@ -12,11 +12,11 @@
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
   "license": "MIT",
-  "icon": "assets/blacksmiths/icon.png",
+  "icon": "assets/blacksmiths/blacksmiths_icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "org.samo_lego.blacksmiths.fabric.BlacksmithsFabric"
+      "org.samo_lego.blacksmiths.BlacksmithsFabric"
     ]
   },
   "depends": {

@@ -1,6 +1,6 @@
 package org.samo_lego.blacksmiths.economy;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -50,6 +50,6 @@ public class VanillaEconomy {
 
     public Item getRequiredItem() {
         ResourceLocation itemId = new ResourceLocation(CONFIG.costs.paymentItem);
-        return Registry.ITEM.get(itemId);
+        return BuiltInRegistries.ITEM.get(itemId);
     }
 }

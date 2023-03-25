@@ -1,4 +1,4 @@
-package org.samo_lego.blacksmiths;
+package org.samo_lego.blacksmiths.platform;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;

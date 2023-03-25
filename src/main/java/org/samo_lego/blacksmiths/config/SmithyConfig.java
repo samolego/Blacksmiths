@@ -5,16 +5,8 @@ import org.samo_lego.blacksmiths.Blacksmiths;
 import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 import org.samo_lego.config2brigadier.IBrigadierConfigurator;
 import org.samo_lego.config2brigadier.annotation.BrigadierDescription;
-import org.samo_lego.config2brigadier.annotation.BrigadierExcluded;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import static org.apache.logging.log4j.LogManager.getLogger;
@@ -74,9 +66,12 @@ public class SmithyConfig implements IBrigadierConfigurator {
 
         @SerializedName("// Whether to force item-based transactions.")
         public final String _comment_ignoreEconomyMod = "";
-        @BrigadierExcluded
-        @SerializedName("ignore_economy_mod")
-        public boolean ignoreEconomyMod = false;
+
+
+        @SerializedName("// The id of the economy mod to use. If empty, will use the default (above) config.")
+        public final String _comment_economyModId = "";
+        @SerializedName("economy_mod_id")
+        public String economyModId = "";
 
         @SerializedName("// Whether to add lore with cost info to the item.")
         public final String _comment_addLore = "";
@@ -147,10 +142,10 @@ public class SmithyConfig implements IBrigadierConfigurator {
         SmithyConfig newConfig = loadConfigFile(file);
 
         // We can support GrandEconomy -> VanillaEconomy during runtime, but not the other way around.
-        if (newConfig.costs.ignoreEconomyMod && !this.costs.ignoreEconomyMod) {
+        if (newConfig.costs.economyModId.isEmpty() && !this.costs.economyModId.isEmpty()) {
             Blacksmiths.getInstance().setEconomy(new VanillaEconomy());
-        } else if (!newConfig.costs.ignoreEconomyMod && this.costs.ignoreEconomyMod) {
-            getLogger(MOD_ID).warn("Enabling GrandEconomy support during runtime is not supported. Disabling it.");
+        } else if (!newConfig.costs.economyModId.isEmpty() && this.costs.economyModId.isEmpty()) {
+            getLogger(MOD_ID).warn("Enabling economy support during runtime is not supported. Disabling it.");
         }
         this.reload(newConfig);
         this.save();

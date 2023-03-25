@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.samo_lego.blacksmiths.config.SmithyConfig;
 import org.samo_lego.blacksmiths.economy.VanillaEconomy;
+import org.samo_lego.blacksmiths.platform.PlatformType;
 import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
 import org.samo_lego.taterzens.api.TaterzensAPI;
 
@@ -17,7 +18,7 @@ public class Blacksmiths {
 
     private static Blacksmiths INSTANCE;
     private final Path configPath;
-    public static final Logger LOGGER = LogManager.getLogger("Blacksmiths");
+    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     private VanillaEconomy economy;
 
     public Blacksmiths(PlatformType platform, VanillaEconomy economy) {
@@ -25,9 +26,7 @@ public class Blacksmiths {
         this.economy = economy;
         this.configPath = Path.of(getConfigPath(platform));
 
-        if (CONFIG == null) {
-            initConfig(platform);
-        }
+        initConfig(platform);
 
         TaterzensAPI.registerProfession(BlacksmithProfession.ID, BlacksmithProfession::new);
     }
@@ -44,6 +43,10 @@ public class Blacksmiths {
         return INSTANCE;
     }
 
+    public SmithyConfig getCofig() {
+        return CONFIG;
+    }
+
     public File getConfigFile() {
         return this.configPath.toFile();
     }
@@ -54,5 +57,9 @@ public class Blacksmiths {
 
     public void setEconomy(VanillaEconomy economy) {
         this.economy = economy;
+    }
+
+    public Logger getLogger() {
+        return LOGGER;
     }
 }

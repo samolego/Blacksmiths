@@ -1,73 +1,137 @@
 plugins {
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.11.0-SNAPSHOT" apply false
-
+    id 'fabric-loom' version '1.1-SNAPSHOT'
+    id 'maven-publish'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "1.1.0"
+    id "com.modrinth.minotaur" version "2.+"
 }
 
-architectury {
-    minecraft = rootProject.minecraft_version
-}
 
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+group = project.maven_group
 
 repositories {
+    // Add repositories to retrieve artifacts from in here.
+    // You should only use this when depending on other mods because
+    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+    // for more information about repositories.
     mavenCentral()
-    maven {
-        name = "ParchmentMC"
-        url = "https://maven.parchmentmc.net/"
+    maven { url 'https://jitpack.io' }  // Taterzens itself
+    maven { url 'https://maven.nucleoid.xyz' }  // Nucleoid (good stuff)
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }  // Permission API
+}
+
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    mappings loom.layered {
+        it.officialMojangMappings()
+    }
+
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // Taterzens
+    // We need this for profession API
+    modImplementation("com.github.samolego.Taterzens:taterzens-fabric:${project.taterzens}")
+    modImplementation include("eu.pb4:common-economy-api:${project.common_economy_api}")
+    modImplementation include("eu.pb4:sgui:${project.sgui}")
+
+    modImplementation include("com.github.samolego.Config2Brigadier:config2brigadier-fabric:${project.config2brigadier}")
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
     }
 }
 
-subprojects {
-    apply plugin: "dev.architectury.loom"
+tasks.withType(JavaCompile).configureEach {
+    // Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
+    it.options.release = 17
+}
 
-    loom {
-        silentMojangMappingsLicense()
+java {
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this line, sources will not be generated.
+    withSourcesJar()
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
+}
+
+// configure the maven publication
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
     }
 
-    dependencies {
-        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        mappings loom.layered() {
-            officialMojangMappings()
-            //parchment("org.parchmentmc.data:parchment-1.18.1:2021.12.19@zip")
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
+    }
+}
+
+def ENV = System.getenv();
+
+curseforge {
+    if (ENV.CURSEFORGE_API_KEY) {
+        apiKey = ENV.CURSEFORGE_API_KEY
+    }
+
+    project {
+        id = "560532"
+        changelog = ENV.CHANGELOG ?: "A changelog can be found at https://github.com/samolego/TraderNPCs/releases/tag/${version}"
+        releaseType = "release"
+        addGameVersion project.minecraft_version
+        addGameVersion "Fabric"
+
+        mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}-fabric.jar")) {
+            displayName = "[${project.minecraft_version}] Blacksmiths ${version} [Fabric]"
         }
 
+        afterEvaluate {
+            uploadTask.dependsOn("remapJar")
+        }
+    }
+
+    options {
+        forgeGradleIntegration = false
     }
 }
 
-allprojects {
-    apply plugin: "java"
-    apply plugin: "architectury-plugin"
-    apply plugin: "maven-publish"
+task {
 
-    archivesBaseName = rootProject.archives_base_name
-    version = rootProject.mod_version
-    group = rootProject.maven_group
+    token = ENV.MODRINTH_TOKEN
+    projectId = "C7X7fJhx"
+    versionNumber = project.minecraft_version + "+" + version + "-fabric"
+    changelog = ENV.CHANGELOG ?: "A changelog can be found at https://github.com/samolego/TraderNPCs/releases/tag/${version}"
+    versionName = "[${project.minecraft_version}] Blacksmiths ${version} [Fabric]"
+    versionType = "release"
 
-    repositories {
-        // Add repositories to retrieve artifacts from in here.
-        // You should only use this when depending on other mods because
-        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-        // for more information about repositories.
+    uploadFile = file("${project.buildDir}/libs/${archivesBaseName}-${version}-fabric.jar")
 
-        // jitpack
-        maven { url "https://jitpack.io" }
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ['fabric', 'quilt']
 
-        // nucleoid maven
-        maven { url "https://maven.nucleoid.xyz" }
-
-        // luckperms maven
-        maven { url "https://oss.sonatype.org/content/repositories/public/" }
+    dependencies { // A special DSL for creating dependencies
+        required.project "fabric-api" // Creates a new required dependency on Fabric API
     }
 
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-        options.release = 17
-    }
-
-    java {
-        withSourcesJar()
-    }
 }

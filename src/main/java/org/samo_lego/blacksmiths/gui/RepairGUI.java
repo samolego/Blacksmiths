@@ -13,7 +13,7 @@ import org.samo_lego.blacksmiths.economy.VanillaEconomy;
 import org.samo_lego.blacksmiths.inventory.RepairInventory;
 import org.samo_lego.blacksmiths.inventory.RepairingSlot;
 import org.samo_lego.blacksmiths.profession.BlacksmithProfession;
-import org.samo_lego.taterzens.gui.ListItemsGUI;
+import org.samo_lego.taterzens.fabric.gui.ListItemsGUI;
 
 import java.util.List;
 
@@ -167,7 +167,7 @@ public class RepairGUI extends ListItemsGUI {
 
     public MutableComponent notEnoughMoneyMessage(double needed) {
         final String message = CONFIG.messages.insufficentCredit;
-        if (!CONFIG.costs.ignoreEconomyMod) {
+        if (!CONFIG.costs.economyModId.isEmpty()) {
             // Round needed to 2 decimals
             needed = Math.round(needed * 100) / 100.0;
         }

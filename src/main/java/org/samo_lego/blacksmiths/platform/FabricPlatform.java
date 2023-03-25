@@ -1,7 +1,6 @@
-package org.samo_lego.blacksmiths.fabric.platform;
+package org.samo_lego.blacksmiths.platform;
 
 import net.fabricmc.loader.api.FabricLoader;
-import org.samo_lego.blacksmiths.PlatformType;
 
 import java.nio.file.Path;
 
